@@ -1,0 +1,21 @@
+# Dataset and cache files
+data/
+
+# Virtual environment
+venv/
+__pycache__/
+*.pyc
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Generated embeddings (add these as your project grows)
+*.pkl
+*.npy
+embeddings/
+
+# Tools
+.cursor
+.AGENTS.md
+.CLAUDE.md
+.GEMINI.md
