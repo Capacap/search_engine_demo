@@ -1,5 +1,6 @@
 # Dataset and cache files
 data/
+.gradio
 
 # Virtual environment
 venv/
