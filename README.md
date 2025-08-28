@@ -1,28 +1,28 @@
 # Multimodal Search Engine
 
-A bidirectional semantic search system that enables natural language image retrieval and image-to-text discovery using CLIP (Contrastive Language-Image Pre-training) embeddings.
+A semantic search system that enables bidirectional search between images and text using CLIP embeddings. Users can search for images using natural language descriptions or find similar text captions by uploading images.
 
-## Architecture
+## Overview
 
-This implementation demonstrates the mathematical elegance of multimodal semantic similarity through normalized vector embeddings projected onto a unit hypersphere, where cosine similarity reduces to efficient dot product operations.
+This project implements a multimodal search engine using OpenAI's CLIP model to create vector embeddings for both images and text. The system uses cosine similarity to find semantically related content across modalities.
 
-### Core Components
+### Key Components
 
-- **Embedding Generation**: Projects images and text into a unified 512-dimensional semantic manifold using CLIP-ViT-Base-Patch32
-- **Similarity Computation**: Leverages L2-normalized embeddings for O(n) cosine similarity via matrix operations
-- **Deduplication Algorithm**: Ensures unique image results while preserving optimal semantic matches
-- **Storage Architecture**: HDF5-based compressed storage with metadata preservation and integrity validation
+- **Data Processing**: Loads and validates the Flickr8K dataset, generating normalized embeddings for all images and captions
+- **Search Engine**: Implements efficient similarity search using dot product operations on normalized embeddings  
+- **Web Interface**: Provides an interactive Gradio-based interface for both text-to-image and image-to-text search
+- **Storage**: Uses compressed HDF5 format for efficient storage and retrieval of embeddings
 
 ## Features
 
-### 🔍 Text → Image Search
-Search through 8,091+ images using natural language queries. The system maps textual concepts to visual representations in embedding space.
+### Text to Image Search
+Find images that match natural language descriptions. The system searches through 8,091 images from the Flickr8K dataset.
 
-### 🖼️ Image → Text Search  
-Upload images to discover semantically similar captions from the dataset, enabling reverse semantic lookup.
+### Image to Text Search  
+Upload an image to find semantically similar text descriptions from the dataset.
 
-### 🎨 Interactive Interface
-Gradio-powered web interface with intuitive tabbed navigation, real-time results, and similarity scoring.
+### Interactive Web Interface
+Browser-based interface with separate tabs for each search mode, configurable result counts, and detailed similarity scores.
 
 ## Technical Specifications
 
@@ -53,29 +53,29 @@ mkdir -p data
 ```bash
 jupyter notebook notebooks/part01_data_preparation.ipynb
 ```
-Downloads Flickr8K dataset, generates CLIP embeddings, and stores them in compressed HDF5 format.
+Downloads Flickr8K dataset, generates CLIP embeddings, and stores them in HDF5 format.
 
 ### 2. Search Functionality Testing
 ```bash
 jupyter notebook notebooks/part02_search_functionality.ipynb
 ```
-Demonstrates core search algorithms with comparative analysis of standard vs. diverse search variants.
+Demonstrates the search algorithms and compares different result filtering approaches.
 
 ### 3. Launch Web Interface
 ```bash
 jupyter notebook notebooks/part03_multimodal_interface.ipynb
 ```
-Launches the interactive Gradio interface for bidirectional semantic search.
+Launches the interactive web interface for searching images and text.
 
-## Mathematical Foundation
+## Technical Details
 
-The system operates on the principle that semantic similarity can be expressed as geometric proximity in embedding space. By normalizing embeddings to unit vectors, cosine similarity becomes:
+The search algorithm uses L2-normalized CLIP embeddings, allowing cosine similarity to be computed efficiently as a dot product:
 
 ```
-similarity(query, image) = query · image
+similarity(query, target) = normalized_query · normalized_target
 ```
 
-This reduction enables efficient similarity computation across large datasets while maintaining semantic fidelity.
+This approach scales well to large datasets while maintaining semantic accuracy.
 
 ## Project Structure
 
@@ -83,45 +83,43 @@ This reduction enables efficient similarity computation across large datasets wh
 search_engine_demo/
 ├── notebooks/
 │   ├── part01_data_preparation.ipynb      # Dataset loading and embedding generation
-│   ├── part02_search_functionality.ipynb  # Core search algorithms and testing
-│   └── part03_multimodal_interface.ipynb  # Interactive web interface
+│   ├── part02_search_functionality.ipynb  # Search algorithm implementation and testing
+│   └── part03_multimodal_interface.ipynb  # Web interface
 ├── data/
-│   ├── flickr8k_embeddings.h5            # Compressed embeddings storage
+│   ├── flickr8k_embeddings.h5            # Stored embeddings
 │   └── datasets/
 │       └── adityajn105/flickr8k/
-│           ├── Images/                     # 8,091 JPEG images
-│           └── captions.txt               # Image-caption mappings
+│           ├── Images/                     # Dataset images
+│           └── captions.txt               # Image captions
 ├── requirements.txt                        # Python dependencies
-└── README.md                              # Project documentation
+└── README.md                              # Documentation
 ```
 
-## Performance Characteristics
+## Performance
 
-- **Embedding Generation**: ~4.46 batches/second (batch_size=32)
-- **Search Latency**: Sub-second response for datasets up to 40K+ items
-- **Memory Efficiency**: Compressed storage reduces disk usage by ~60%
-- **GPU Acceleration**: CUDA-optimized for NVIDIA hardware
+- **Embedding Generation**: ~4.46 batches/second (RTX 3060 Ti, batch_size=32)
+- **Search Speed**: Sub-second response for 40K+ embeddings
+- **Storage**: HDF5 compression reduces storage by ~60%
+- **Requirements**: CUDA-compatible GPU recommended
 
 ## Dependencies
 
-Key technical dependencies:
-- `torch` - PyTorch deep learning framework
-- `transformers` - Hugging Face model hub integration  
-- `h5py` - HDF5 storage interface
-- `gradio` - Web interface framework
-- `numpy` - Vectorized operations
+Core libraries:
+- `torch` - PyTorch framework
+- `transformers` - Hugging Face transformers library
+- `h5py` - HDF5 file handling
+- `gradio` - Web interface
+- `numpy` - Array operations
 - `Pillow` - Image processing
 
-## Academic Context
+See `requirements.txt` for complete dependency list with versions.
 
-This implementation serves as a practical demonstration of:
-- Cross-modal representation learning
-- Semantic embedding space geometry
-- Efficient similarity search algorithms
-- Multimodal AI system architecture
+## Implementation Notes
 
-The codebase exhibits production-ready patterns including comprehensive error handling, resource management, and immutable data design principles.
+This project demonstrates practical implementation of:
+- Cross-modal embedding alignment using CLIP
+- Efficient similarity search with normalized vectors
+- Interactive multimodal interfaces
+- Compressed storage for large embedding datasets
 
----
-
-*Built with mathematical rigor and computational elegance.*
+The implementation includes error handling, input validation, and modular design for easy extension and modification.
